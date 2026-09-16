@@ -17,6 +17,14 @@
     }
   },
   "permissions": ["scripting", "activeTab", "storage", "unlimitedStorage"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": false,
+      "run_at": "document_idle"
+    }
+  ],
   "background": {
     "service_worker": "background.js"
   },

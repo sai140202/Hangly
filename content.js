@@ -33,49 +33,99 @@
   });
   container.appendChild(canvas);
 
-  // Small floating control bar (kept minimal so overlay is nearly invisible)
+  // Inject Theme Styles
+  const styleEl = document.createElement("style");
+  styleEl.textContent = `
+    #__hangly_overlay__ {
+      --hg-bg: #fffaf0; --hg-text: #374151; --hg-border: 2px solid #374151; --hg-shadow: 4px 4px 0px #374151; 
+      --hg-font: "Comic Sans MS", "Chalkboard SE", "Nunito", sans-serif; --hg-accent1: #e84393; 
+      --hg-accent2: #fd79a8; --hg-btn-stop: #ff7675; --hg-btn-close: #74b9ff; --hg-btn-upload: #55efc4;
+      --hg-radius: 14px; --hg-btn-radius: 8px; --hg-title-shadow: 1px 1px 0px #ffeaa7;
+    }
+    #__hangly_overlay__.theme-anime {
+      --hg-bg: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); --hg-text: #4a235a; --hg-border: 2px solid #ffffff; 
+      --hg-shadow: 0 6px 20px rgba(31,38,135,0.2); --hg-font: "Nunito", "Segoe UI", sans-serif; --hg-accent1: #ffffff; 
+      --hg-accent2: #fbc2eb; --hg-btn-stop: #ff9a9e; --hg-btn-close: #a1c4fd; --hg-btn-upload: #ffffff;
+      --hg-radius: 20px; --hg-btn-radius: 16px; --hg-title-shadow: 0 0 6px rgba(255,255,255,0.7);
+    }
+    #__hangly_overlay__.theme-marvel {
+      --hg-bg: #e23636; --hg-text: #ffffff; --hg-border: 3px solid #1f2937; --hg-shadow: 4px 4px 0px #f0a141; 
+      --hg-font: "Impact", "Arial Black", sans-serif; --hg-accent1: #f0a141; --hg-accent2: #f0a141; 
+      --hg-btn-stop: #1f2937; --hg-btn-close: #518cca; --hg-btn-upload: #f0a141;
+      --hg-radius: 4px; --hg-btn-radius: 4px; --hg-title-shadow: 2px 2px 0px #1f2937;
+    }
+    #__hangly_overlay__.theme-horror {
+      --hg-bg: #1a1a1a; --hg-text: #e53935; --hg-border: 2px dashed #9b2226; --hg-shadow: 0 0 15px rgba(229, 57, 53, 0.4); 
+      --hg-font: "Courier New", monospace; --hg-accent1: #e53935; --hg-accent2: #4a0404; 
+      --hg-btn-stop: #660708; --hg-btn-close: #2a2a2a; --hg-btn-upload: #9b2226;
+      --hg-radius: 2px; --hg-btn-radius: 2px; --hg-title-shadow: 1px 1px 3px rgba(229, 57, 53, 0.6);
+    }
+    #__hangly_overlay__.theme-cyber {
+      --hg-bg: rgba(18, 18, 25, 0.95); --hg-text: #00e5ff; --hg-border: 2px solid #d500f9; --hg-shadow: 0 0 12px rgba(0, 229, 255, 0.3); 
+      --hg-font: "Consolas", monospace; --hg-accent1: #d500f9; --hg-accent2: #00e5ff; 
+      --hg-btn-stop: #e50055; --hg-btn-close: #0044dd; --hg-btn-upload: #fcee0a;
+      --hg-radius: 2px; --hg-btn-radius: 2px; --hg-title-shadow: 1px 1px 0px rgba(213, 0, 249, 0.8);
+    }
+  `;
+  document.head.appendChild(styleEl);
+  container.className = "theme-cartoon"; // default
+
+  // Small floating control bar
   const controls = document.createElement("div");
   Object.assign(controls.style, {
     position: "fixed", top: "25px", right: "25px",
-    display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px",
-    fontFamily: "sans-serif", fontSize: "14px", pointerEvents: "auto", zIndex: "2147483647"
+    display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px",
+    fontFamily: "var(--hg-font)", fontSize: "14px", pointerEvents: "auto", zIndex: "2147483647"
   });
 
   const menuBtn = document.createElement("button");
-  menuBtn.innerHTML = "⚙️";
+  menuBtn.innerHTML = "✨";
   Object.assign(menuBtn.style, {
-    padding: "6px", background: "rgba(20,20,24,0.8)", color: "#fff", border: "none",
-    borderRadius: "8px", cursor: "pointer", fontSize: "16px"
+    padding: "8px 10px", background: "var(--hg-accent2)", color: "var(--hg-text)",
+    border: "var(--hg-border)", borderRadius: "50%",
+    cursor: "pointer", fontSize: "24px",
+    boxShadow: "var(--hg-shadow)", fontWeight: "bold"
   });
   controls.appendChild(menuBtn);
 
   const menuPanel = document.createElement("div");
   Object.assign(menuPanel.style, {
-    display: "none", background: "rgba(30,30,35,0.95)", padding: "12px",
-    borderRadius: "8px", color: "#fff", width: "220px",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.5)", backdropFilter: "blur(4px)"
+    display: "none", background: "var(--hg-bg)", padding: "16px",
+    borderRadius: "var(--hg-radius)", color: "var(--hg-text)", width: "240px",
+    border: "var(--hg-border)", boxShadow: "var(--hg-shadow)",
+    fontFamily: "var(--hg-font)"
   });
 
   menuPanel.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <strong style="font-size:14px;margin:0;">Hangly</strong>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <strong style="font-size:18px;margin:0;color:var(--hg-accent1);letter-spacing:1px;text-transform:uppercase;text-shadow:var(--hg-title-shadow);">🌸 Hangly</strong>
       <div style="white-space:nowrap;">
-        <button id="__hg_stop" title="Remove Hangly" style="background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px;margin-right:6px;display:inline-block;">Stop</button>
-        <button id="__hg_close_menu" title="Close Menu" style="background:#555;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px;display:inline-block;">Close</button>
+        <button id="__hg_stop" title="Remove Hangly" style="background:var(--hg-btn-stop);color:#fff;border:var(--hg-border);padding:4px 10px;border-radius:var(--hg-btn-radius);cursor:pointer;font-size:12px;margin-right:6px;display:inline-block;font-weight:bold;font-family:inherit;">Stop</button>
+        <button id="__hg_close_menu" title="Close Menu" style="background:var(--hg-btn-close);color:var(--hg-text);border:var(--hg-border);padding:4px 10px;border-radius:var(--hg-btn-radius);cursor:pointer;font-size:12px;display:inline-block;font-weight:bold;font-family:inherit;">Close</button>
       </div>
     </div>
-    <div style="font-size:12px;margin-bottom:4px;color:#ccc;">Thread Design:</div>
-    <select id="__hg_thread_select" style="width:100%;padding:4px;border-radius:4px;background:#333;color:#fff;border:1px solid #555;margin-bottom:10px;font-size:12px;">
-      <option value="web">Spiderman Web</option>
-      <option value="rope">Rope</option>
-      <option value="chain">Chain</option>
+    
+    <div style="font-size:13px;margin-bottom:6px;font-weight:bold;color:var(--hg-text);">🎨 UI Theme:</div>
+    <select id="__hg_theme_select" style="width:100%;padding:6px;border-radius:var(--hg-btn-radius);background:var(--hg-bg);color:var(--hg-text);border:var(--hg-border);margin-bottom:14px;font-size:13px;outline:none;cursor:pointer;font-family:inherit;font-weight:bold;">
+      <option value="theme-cartoon">🎈 Cartoon</option>
+      <option value="theme-anime">🌸 Anime</option>
+      <option value="theme-marvel">🦸 Marvel</option>
+      <option value="theme-horror">🧛 Horror</option>
+      <option value="theme-cyber">🤖 Cyberpunk</option>
     </select>
-    <label style="background:#3498db;color:white;padding:6px;border-radius:4px;cursor:pointer;display:block;text-align:center;margin-bottom:10px;font-size:13px;">
-      Upload Custom Image
+
+    <div style="font-size:13px;margin-bottom:6px;font-weight:bold;color:var(--hg-text);">🎀 Thread Design:</div>
+    <select id="__hg_thread_select" style="width:100%;padding:6px;border-radius:var(--hg-btn-radius);background:var(--hg-bg);color:var(--hg-text);border:var(--hg-border);margin-bottom:14px;font-size:13px;outline:none;cursor:pointer;font-family:inherit;font-weight:bold;">
+      <option value="web">🕸️ Spiderman Web</option>
+      <option value="rope">🪢 Rope</option>
+      <option value="chain">⛓️ Chain</option>
+    </select>
+    <label style="background:var(--hg-btn-upload);color:var(--hg-text);padding:8px;border-radius:var(--hg-btn-radius);cursor:pointer;display:block;text-align:center;margin-bottom:14px;font-size:14px;border:var(--hg-border);font-weight:bold;">
+      🌟 Upload Custom Charm
       <input type="file" id="__hg_upload" accept="image/*" style="display:none;">
     </label>
-    <div style="font-size:12px;margin-bottom:6px;color:#ccc;">Select Charm:</div>
-    <div id="__hg_gallery" style="display:flex;gap:6px;flex-wrap:wrap;max-height:120px;overflow-y:auto;padding-bottom:4px;"></div>
+    <div style="font-size:13px;margin-bottom:8px;font-weight:bold;color:var(--hg-text);">💖 Select Charm:</div>
+    <div id="__hg_gallery" style="display:flex;gap:8px;flex-wrap:wrap;max-height:140px;overflow-y:auto;padding-bottom:6px;padding-right:4px;"></div>
   `;
   controls.appendChild(menuPanel);
   container.appendChild(controls);
@@ -134,8 +184,10 @@
       const img = document.createElement("img");
       img.src = src;
       Object.assign(img.style, {
-        width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", cursor: "pointer",
-        border: id === selectedImageId ? "2px solid #2ecc71" : "2px solid transparent"
+        width: "42px", height: "42px", objectFit: "cover", borderRadius: "var(--hg-btn-radius)", cursor: "pointer",
+        border: id === selectedImageId ? "3px solid var(--hg-accent1)" : "var(--hg-border)",
+        boxShadow: id === selectedImageId ? "2px 2px 0px var(--hg-accent1)" : "none",
+        backgroundColor: "var(--hg-bg)", padding: "2px", boxSizing: "border-box"
       });
       img.onclick = () => {
         selectedImageId = id;
@@ -149,11 +201,11 @@
         const delBtn = document.createElement("button");
         delBtn.innerHTML = "✕";
         Object.assign(delBtn.style, {
-          position: "absolute", top: "-5px", right: "-5px", background: "#e74c3c", color: "white",
-          border: "none", borderRadius: "50%", width: "18px", height: "18px", fontSize: "11px",
+          position: "absolute", top: "-6px", right: "-6px", background: "var(--hg-btn-stop)", color: "#fff",
+          border: "var(--hg-border)", borderRadius: "50%", width: "20px", height: "20px", fontSize: "12px",
           cursor: "pointer", padding: "0", margin: "0", display: "block",
-          textAlign: "center", lineHeight: "18px", fontFamily: "sans-serif",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.5)"
+          textAlign: "center", lineHeight: "16px", fontFamily: "inherit",
+          boxShadow: "1px 1px 0px #000", fontWeight: "bold"
         });
         delBtn.onclick = (e) => {
           e.stopPropagation();
@@ -267,44 +319,87 @@
   const lerpPt = (a, b, t) => new Vec2(a.x * (1 - t) + b.x * t, a.y * (1 - t) + b.y * t);
 
   System.prototype.render = function (alpha, ctx) {
-    ctx.save();
-    
-    if (selectedThread === "rope") {
-      ctx.strokeStyle = "#c08552";
-      ctx.lineWidth = 3;
-      ctx.setLineDash([6, 3]);
-    } else if (selectedThread === "chain") {
-      ctx.strokeStyle = "#bdc3c7";
-      ctx.lineWidth = 4;
-      ctx.setLineDash([8, 6]);
-    } else { // "web"
-      ctx.strokeStyle = "rgba(255,255,255,0.85)";
-      ctx.lineWidth = 1.2;
-      ctx.setLineDash([]);
-    }
-
+    // 1. Build the path for the thread
     ctx.beginPath();
     for (let i = 0; i < this.rope.length - 1; i++) {
       const a = lerpPt(this.rope[i].prev, this.rope[i].pos, alpha);
       const b = lerpPt(this.rope[i + 1].prev, this.rope[i + 1].pos, alpha);
       ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
     }
-    ctx.stroke();
 
-    // Secondary strokes for extra visual depth
-    if (selectedThread === "chain") {
-      ctx.strokeStyle = "rgba(0,0,0,0.6)";
-      ctx.lineWidth = 2;
-      ctx.setLineDash([8, 6]);
+    // 2. Stroke the path based on selected design
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if (selectedThread === "rope") {
+      // Thick dark outline
+      ctx.strokeStyle = "#2d3436";
+      ctx.lineWidth = 6;
+      ctx.setLineDash([]);
       ctx.stroke();
-    } else if (selectedThread === "rope") {
-      ctx.strokeStyle = "#8b5a2b";
-      ctx.lineWidth = 1;
-      ctx.setLineDash([6, 3]);
-      ctx.lineDashOffset = 3;
+
+      // Main rope base (golden/beige)
+      ctx.strokeStyle = "#e1b12c";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // Twist detail (darker orange/brown)
+      ctx.strokeStyle = "#e84118";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([3, 5]);
+      ctx.stroke();
+
+    } else if (selectedThread === "chain") {
+      // Chain Period: 16px
+      // 1. Base Outline
+      ctx.strokeStyle = "#2d3436";
+      ctx.lineWidth = 8;
+      ctx.setLineDash([]);
+      ctx.stroke();
+
+      // 2. Perpendicular Links (Darker Silver)
+      ctx.strokeStyle = "#636e72";
+      ctx.lineWidth = 8;
+      ctx.setLineDash([4, 12]);
+      ctx.lineDashOffset = -12;
+      ctx.stroke();
+
+      // 3. Flat Links (Brighter Silver)
+      ctx.strokeStyle = "#dfe6e9";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([12, 4]);
+      ctx.lineDashOffset = 0;
+      ctx.stroke();
+
+      // 4. Flat Link Holes (Background/Black)
+      ctx.strokeStyle = "#2d3436";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 10]);
+      ctx.lineDashOffset = -3;
+      ctx.stroke();
+
+    } else { // "web"
+      // Faint blue glow/outer strand
+      ctx.shadowColor = "#74b9ff";
+      ctx.shadowBlur = 8;
+      ctx.strokeStyle = "rgba(116, 185, 255, 0.5)";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([]);
+      ctx.stroke();
+
+      // Sharp white core
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Sticky web blobs (little thick dots)
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([2, 24]);
       ctx.stroke();
     }
-    
     ctx.restore();
 
     // Draw anchor point visual cue (a small bead/pin)
@@ -336,9 +431,25 @@
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
-    const size = r * 2.4;
-    if (imageReady) {
-      ctx.drawImage(charmImage, -size / 2, -size / 2, size, size);
+    const targetSize = r * 2.4; // Base size for a square image
+    
+    if (imageReady && charmImage.width && charmImage.height) {
+      const aspect = charmImage.width / charmImage.height;
+      let drawW, drawH;
+      
+      // Scale based on the SHORTEST side to ensure the charm feels full, 
+      // rather than scaling based on the longest side which makes it tiny.
+      if (aspect > 1) {
+        // Landscape: Make height match targetSize, let width expand
+        drawH = targetSize;
+        drawW = targetSize * aspect;
+      } else {
+        // Portrait or Square: Make width match targetSize, let height expand
+        drawW = targetSize;
+        drawH = targetSize / aspect;
+      }
+      
+      ctx.drawImage(charmImage, -drawW / 2, -drawH / 2, drawW, drawH);
     } else {
       // fallback while image loads
       ctx.fillStyle = "#d3202f";
@@ -368,6 +479,15 @@
   controls.querySelector("#__hg_close_menu").onclick = () => {
     menuPanel.style.display = "none";
   };
+
+  const themeSelect = controls.querySelector("#__hg_theme_select");
+  if (themeSelect) {
+    themeSelect.onchange = (e) => {
+      selectedTheme = e.target.value;
+      container.className = selectedTheme;
+      if (window.chrome?.storage?.local) chrome.storage.local.set({ selectedTheme });
+    };
+  }
 
   controls.querySelector("#__hg_thread_select").onchange = (e) => {
     selectedThread = e.target.value;
